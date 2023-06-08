@@ -1,5 +1,7 @@
 ﻿using Hotels.DataBase;
+using Hotels.Models;
 using Hotels.Models.Hotel;
+using Hotels.net.Helpers.Attributes;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +17,7 @@ namespace Hotels.Controllers
             this.db = db;
         }
         [HttpPost("add_hotel")]
+        [Authorization(Role.Admin)]
         public IActionResult AddHotel(Hotel_Repost hotel)
         {
             var hotelEntity = new Hotel
@@ -34,6 +37,7 @@ namespace Hotels.Controllers
             return Ok(hotelsByCity);
         }
         [HttpGet("{id}")]
+        [Authorization(Role.Admin,Role.User)]
         public IActionResult GetHotel(Guid id)
         {
             var hotel = db.Hotel.Find(id);
@@ -44,6 +48,7 @@ namespace Hotels.Controllers
             return Ok(hotel1);
         }
         [HttpDelete("{id}")]
+        [Authorization(Role.Admin)]
         public IActionResult DeleteHotel(Guid id)
         {
             var hotel = db.Hotel.Find(id);
@@ -52,6 +57,7 @@ namespace Hotels.Controllers
             return Ok();
         }
         [HttpGet("get_all_hotels")]
+        [Authorization(Role.Admin,Role.User)]
         public IActionResult getAllHotels()
         {
             var hotels=db.Hotel.AsNoTracking().ToList();
@@ -68,6 +74,7 @@ namespace Hotels.Controllers
 
         }
         [HttpGet("get_hotels_by_city")]
+        [Authorization(Role.Admin,Role.User)]
         public IActionResult GetHotels_By_City(string city)
         {
             var hotels = db.Hotel.AsNoTracking().Where(x => x.city == city).ToList();

@@ -19,6 +19,7 @@ namespace Hotels.Services.UserService
         public async Task<UserResponseDTO?> CreateUser(string FirstName, string LastName, string Email, string Username, string Password)
         {
             var check_user =userRepository.FindByUsername(Username);
+
             if (check_user is not null)
                 return null;
 

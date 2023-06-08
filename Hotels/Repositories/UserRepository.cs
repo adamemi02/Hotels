@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Hotels.Repositories.UserRepository
 {
-    public class UserRepository : GenericRepository<User>
+    public class UserRepository : GenericRepository<User>, IUserRepository
     {
         public UserRepository(DataBaseContext context) : base(context) { }
 
