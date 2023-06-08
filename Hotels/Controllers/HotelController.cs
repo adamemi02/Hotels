@@ -17,12 +17,21 @@ namespace Hotels.Controllers
         [HttpPost("add_hotel")]
         public IActionResult AddHotel(Hotel_Repost hotel)
         {
-            var hotel1 = new Hotel();
-            hotel1.name = hotel.name;
-            hotel1.city = hotel.city;
-            db.Hotel.Add(hotel1);
+            var hotelEntity = new Hotel
+            {
+                name = hotel.name,
+                city = hotel.city
+            };
+
+            db.Hotel.Add(hotelEntity);
             db.SaveChanges();
-            return Ok();
+
+            // Group hotels by city
+            var hotelsByCity = db.Hotel
+                .GroupBy(h => h.city)
+                .ToList();
+
+            return Ok(hotelsByCity);
         }
         [HttpGet("{id}")]
         public IActionResult GetHotel(Guid id)
@@ -46,13 +55,31 @@ namespace Hotels.Controllers
         public IActionResult getAllHotels()
         {
             var hotels=db.Hotel.AsNoTracking().ToList();
-            return Ok(hotels);
+            var hotels_request=new List<Hotel_Request>();
+            foreach (var hotel in hotels)
+            {
+                var hotel_request=new Hotel_Request();
+                hotel_request.name = hotel.name;
+                hotel_request.city = hotel.city;
+                hotel_request.Id = hotel.Id;
+                hotels_request.Add(hotel_request);
+            }
+            return Ok(hotels_request);
 
         }
         [HttpGet("get_hotels_by_city")]
         public IActionResult GetHotels_By_City(string city)
         {
             var hotels = db.Hotel.AsNoTracking().Where(x => x.city == city).ToList();
+            var hotels_request= new List<Hotel_Request>();
+            foreach (var hotel in hotels)
+            {
+                var hotel_request=new Hotel_Request();
+                hotel_request.name = hotel.name;
+                hotel_request.city = hotel.city;
+                hotel_request.Id = hotel.Id;
+                hotels_request.Add(hotel_request);
+            }
             return Ok(hotels);
         }
 
