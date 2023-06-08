@@ -5,6 +5,7 @@ using Hotels.Services.UserService;
 
 namespace Hotels.Helpers.Middleware
 {
+    
     public class JwtMiddleware
     {
         private readonly RequestDelegate _nextRequestDelegate;
@@ -29,4 +30,5 @@ namespace Hotels.Helpers.Middleware
         }
         
     }
+    
 }

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 
-namespace Proiect_.net.Controllers
+namespace Hotels.Controllers
 {
     [Route("api/[controller]s")]
     [ApiController]
