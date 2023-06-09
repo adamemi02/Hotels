@@ -20,6 +20,7 @@ namespace Hotels.Controllers
         }
 
         [HttpPost("user")]
+
         public async Task<ActionResult<UserResponseDTO>> Register(UserRegisterRequestDTO User)
         {
             var user = await _userService.CreateUser(User.FirstName, User.LastName, User.Email, User.Username, User.Password);
@@ -27,6 +28,7 @@ namespace Hotels.Controllers
         }
 
         [HttpPost("admin")]
+        [Authorization(Role.Admin)]
         public async Task<ActionResult<UserResponseDTO>> AddAdmin(UserRegisterRequestDTO Admin)
         {
             var admin = await _userService.CreateAdmin(Admin.FirstName, Admin.LastName, Admin.Email, Admin.Username, Admin.Password);
@@ -56,7 +58,7 @@ namespace Hotels.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorization(Role.Admin, Role.User)]
+        [Authorization(Role.Admin)]
         public async Task<ActionResult<UserWithoutTokensResponseDTO>> GetUser(Guid id)
         {
             var user = await _userService.GetUserById(id);
@@ -64,6 +66,7 @@ namespace Hotels.Controllers
         }
 
         [HttpGet]
+        [Authorization(Role.Admin)]
         public async Task<ActionResult<IEnumerable<UserWithoutTokensResponseDTO>>> GetAllUsers()
         {
             return Ok(await _userService.GetAllUsers());
