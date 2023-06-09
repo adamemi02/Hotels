@@ -1,6 +1,8 @@
 ﻿using Hotels.DataBase;
 using Hotels.Models;
+using Hotels.Models.Categorie;
 using Hotels.Models.Hotel;
+using Hotels.Models.Review;
 using Hotels.net.Helpers.Attributes;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -88,6 +90,42 @@ namespace Hotels.Controllers
                 hotels_request.Add(hotel_request);
             }
             return Ok(hotels);
+        }
+        [HttpGet("get_hotel_with_categories_and_reviews/{id}")]
+        [Authorization(Role.Admin, Role.User)]
+        public IActionResult GetHotelWithCategoriesAndReviews(Guid id)
+        {
+            var hotel = db.Hotel
+                .Include(h => h.hotel_categories)
+                    .ThenInclude(hc => hc.Categorie)
+                .Include(h => h.reviews)
+                .FirstOrDefault(h => h.Id == id);
+
+            if (hotel == null)
+            {
+                return NotFound();
+            }
+
+            // Map the hotel, categories, and reviews to the desired response model
+            var hotelWithCategoriesAndReviews = new HotelWithCategoriesAndReviews
+            {
+                name = hotel.name,
+                city = hotel.city,
+                // Add other hotel properties as needed
+                Categories = hotel.hotel_categories.Select(hc => new Categorie
+                {
+                    name = hc.Categorie.name
+                    // Add other category properties as needed
+                }).ToList(),
+                Reviews = hotel.reviews.Select(r => new Review
+                {
+                    nota=r.nota,
+                    descriere=r.descriere
+                    
+                }).ToList()
+            };
+
+            return Ok(hotelWithCategoriesAndReviews);
         }
 
     }
